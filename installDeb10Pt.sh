@@ -17,7 +17,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       ;;
     -n|--No)
-      SKIN_PROMPTS_NO="n"
+      SKIP_PROMPTS_NO="n"
       shift # past argument
       ;;
     -P|--root_password)
@@ -131,7 +131,7 @@ systemctl enable redis-server
 echo -ne "${A_INVERSE}------------------------------------------------${A_RESET}...\n";
 
 
-if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
+if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z "${SKIP_PROMPTS_NO}" ] ; then
 	echo -ne "Install certbot? (Y/n) \n";
 	select ctbt in Yes No 
 	do
@@ -154,7 +154,8 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 	done
 
 	echo -ne "\nInstall composer? (Y/n) ";
-	select compo in Yes No 
+
+  select compo in Yes No
 	do
 		if [[ $compo -eq Yes ]]; then
 			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
