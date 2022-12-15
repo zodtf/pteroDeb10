@@ -138,6 +138,11 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 		if [[ $ctbt -eq "Y" ]]; then
 			apt install -y certbot curl
 		fi
+
+		 if [ "$ctbt" != "" ]
+        then
+            break
+        fi
 	done
 
 	echo -ne "\nInstall composer? (Y/n) ";
@@ -146,6 +151,10 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 		if [[ $compo -eq "Y" ]]; then
 			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 		fi
+		 if [ "$compo" != "" ]
+        then
+            break
+        fi
 	done
 elif [[  SKIP_PROMPTS_YES -eq "Y" ]]; then
 	apt install -y certbot curl
@@ -155,7 +164,7 @@ fi
 echo -ne "${A_BLUE}${BOLD}STATUS ${A_RESET}(1/${PT_NUMSTEPS})...\n";
 echo -ne "${A_INVERSE}${A_BLUE}------------------------------------------------${A_RESET}\n\n";
 
-echo "${A_RED}${A_BOLD}MANUAL FOR AWHILE${A_RESET}\n";
+echo -ne "${A_RED}${A_BOLD}MANUAL FOR AWHILE${A_RESET}\n";
 
 # Set root password? [Y/n] Y
 # Remove anonymous users? [Y/n] Y
@@ -164,7 +173,7 @@ echo "${A_RED}${A_BOLD}MANUAL FOR AWHILE${A_RESET}\n";
 # Reload privilege tables now? [Y/n] Y
 
 if [[ ${SKIP_PROMPTS_YES} -eq "Y" ]]; then
-	mysql_secure_installation -y
+	yes | mysql_secure_installation
 else
 	mysql_secure_installation
 fi
@@ -181,37 +190,41 @@ select stopRN in Yes No
 			echo -ne "${A_BOLD}${A_RED}${A_INVERSE}QUITTING now :C${A_RESET}\ngo to that link, and finish those stes manually! \n";
 			exit 1; 
 		fi
+		if [ "$stopRN" != "" ]
+            then
+                break
+            fi
 	done 
 
  EOF > "./temp"; # rest file
 
 ## Remember to change 'somePassword' below to be a unique password specific to this account.
-echo "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'pogPassword'\n" >> ./temp 
+printf "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'pogPassword'\n" >> ./temp 
 
-echo "CREATE DATABASE panel\n"  >> ./temp 
+printf "CREATE DATABASE panel\n"  >> ./temp 
 
-echo "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION\n" >> ./temp 
+printf "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION\n" >> ./temp 
 
 # You should change the username and password below to something unique.
-echo  "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY 'pogpassword'\n"  >> ./temp 
+printf  "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY 'pogpassword'\n"  >> ./temp 
 
-echo "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION\n" >> ./temp  
+printf "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION\n" >> ./temp  
 
 
 #TODO: this requires root password!
 #		also its just super weird...
-"./temp"
+mysql -u root -p < ./temp
 
 
-$(cat ./temp) | mysql -u root -p ${ROOT_PASSWORD}
+#cat './temp' | mysql -u root -p ${ROOT_PASSWORD}
 
 # ALLOW EXTERNAL ACCESS
 
 # get the first result
-{ read first; } < "$(find /etc -iname my.cnf)"
+{ read CFG_FIRST; } < "$(find /etc -iname my.cnf)"
 
 # write external stuff to this file
-echo -ne "\n\n[mysqld]\nbind-address 0.0.0.0\n" > "${first}"
+echo -ne "\n\n[mysqld]\n\nbind-address = 0.0.0.0\n" > "${CFG_FIRST}"
 
 # restart
 systemctl restart mariadb
@@ -278,7 +291,7 @@ curl https://gist.githubusercontent.com/zudsniper/863d01f8c4b45b8556e7e3dea3aa70
 mv "/etc/nginx/conf.d/ssl.conf" "/etc/nginx/conf.d/${PANEL_DOMAIN}.conf"
 
 # replace the instances of "<domain>" in file with the appropriate panel domain.
-sed -i -e `s/\<domain\>/${PANEL_DOMAIN}/g` "/etc/nginx/conf.d/${PANEL_DOMAIN}.txt"
+sed -i -e "`s/\<domain\>/${PANEL_DOMAIN}/g`" "/etc/nginx/conf.d/${PANEL_DOMAIN}.txt"
 
 
 
@@ -292,7 +305,7 @@ echo -ne "${A_GREEN}${A_BOLD}INSTALLING PANEL. MADE IT THIS FAR!${A_RESET}\n";
 
 # making panel dirs
 mkdir -p /var/www/pterodactyl
-cd /var/www/pterodactyl
+cd /var/www/pterodactyl || (echo -ne "${A_RED}${A_BOLD}How did you do this? /var/www/pterodactyl doesn't exist, RIGHT after creation.{A_RESET}\n"; exit 1)
 
 # downloading, uncompressing, and setting permissions
 curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
@@ -394,6 +407,11 @@ select stopNow in Yes No
 			echo -ne "${A_RED}${A_BOLD}go fix ur swap! C:${A_RESET}\n";
 			exit 1; 
 		fi
+
+		if [ "$stopNow" != "" ]
+                then
+                    break
+                fi
 	done
 
 echo -ne "${A_YELLOW}${A_BOLD}Good luck!${A_RESET}\n";

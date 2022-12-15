@@ -2,14 +2,19 @@
 ### `Summary`
 for internal use only of spooky.tf team. Do not reuse without permission. Or do. But I'll be mad.
 
+## `VERSION = 1.0.4` 
+
+---
+
+### **GOALS**
 - passwordless
 - no root login
 - create 1 privileged user via startup
 - configure firewall (ufw) to allow: 80, 443
 
 ### `Includes` 
-`BASED VIM`
----------------------
+
+- `BASED VIM`
 - AdminJS
 - NGiNX
 - PostgreSQL
