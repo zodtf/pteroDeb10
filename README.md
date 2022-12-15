@@ -2,7 +2,7 @@
 ### `Summary`
 for internal use only of spooky.tf team. Do not reuse without permission. Or do. But I'll be mad.
 
-## `VERSION = 1.0.6` 
+## `VERSION = 1.0.7` 
 
 ---
 

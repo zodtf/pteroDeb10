@@ -128,7 +128,7 @@ apt install -y redis-server
 systemctl start redis-server
 systemctl enable redis-server
 
-ehco -ne "${A_INVERSE}------------------------------------------------${A_RESET}...\n";
+echo -ne "${A_INVERSE}------------------------------------------------${A_RESET}...\n";
 
 
 if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
