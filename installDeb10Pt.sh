@@ -136,7 +136,11 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 	select ctbt in Yes No 
 	do
 		if [[ $ctbt -eq "Y" ]]; then
-			apt install -y certbot curl
+			PKG_OK=$(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed")
+			if [[ $PKG_OK -eq 0 ]]; then
+			  apt install curl;
+			fi
+			apt install -y certbot
 		fi
 
 		 if [ "$ctbt" != "" ]
@@ -151,10 +155,10 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 		if [[ $compo -eq "Y" ]]; then
 			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 		fi
-		 if [ "$compo" != "" ]
-        then
-            break
-        fi
+		if [ "$compo" != "" ]
+            then
+                break
+            fi
 	done
 elif [[  SKIP_PROMPTS_YES -eq "Y" ]]; then
 	apt install -y certbot curl
@@ -179,7 +183,7 @@ else
 fi
 
 echo -ne "${A_INVERSE}------------------------------------------------${A_RESET}...\n";
-echo -ne "${A_YELLOW}Adding users${A_RESET}...\n ${A_ITALIC}$this will REQUIRE your root password!${A_RESET}\n";
+echo -ne "${A_YELLOW}Adding users${A_RESET}...\n ${A_ITALIC}this will REQUIRE your root password!${A_RESET}\n";
 
 echo -ne "${A_RED}${A_BOLD}PRETTY SURE THE AUTOMATION IS BROKEN, FINISH MANUALLY! ${A_RESET}\n";
 echo -ne "${A_BOLD}https://pterodactyl.io/tutorials/mysql_setup.html${A_RESET}";
