@@ -60,9 +60,9 @@ if [[ SKIP_PROMPTS_YES -ne "Y" ]]; then
 	echo -ne "${A_BOLD}${A_WHITE}	SKIP WITH ${A_RESET}${A_GREEN}YES!${A_RESET}\n"; 	
 fi
 
-if [[ SKIP_PROMPTS_NO -ne "n" ]]; then
+if [[ SKIP_PROMPTS_NO -ne No ]]; then
 	echo -ne "${A_BOLD}${A_WHITE}	SKIP WITH ${A_RESET}${A_RED}no.${A_RESET}\n"; 	
-	#if [[ SKIP_PROMPTS_YES -eq "Y" ]]; then
+	#if [[ SKIP_PROMPTS_YES -eq Yes ]]; then
 	#	echo -ne "${A_BOLD}${A_RED}	Cannot have -Y & -n flag.${A_RESET}\n"; 	
 	#	exit 1;
 	#fi
@@ -135,7 +135,7 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 	echo -ne "Install certbot? (Y/n) \n";
 	select ctbt in Yes No 
 	do
-		if [[ $ctbt -eq "Y" ]]; then
+		if [[ $ctbt -eq Yes ]]; then
 			PKG_OK=$(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed")
 			if [[ $PKG_OK -eq 0 ]]; then
 			  apt install curl;
@@ -156,7 +156,7 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 	echo -ne "\nInstall composer? (Y/n) ";
 	select compo in Yes No 
 	do
-		if [[ $compo -eq "Y" ]]; then
+		if [[ $compo -eq Yes ]]; then
 			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 		fi
 		if [ "$compo" != "" ]
@@ -164,7 +164,7 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
                 break
             fi
 	done
-elif [[  SKIP_PROMPTS_YES -eq "Y" ]]; then
+elif [[  SKIP_PROMPTS_YES -eq Yes ]]; then
 	apt install -y certbot curl
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 fi
@@ -180,7 +180,7 @@ echo -ne "${A_RED}${A_BOLD}MANUAL FOR AWHILE${A_RESET}\n";
 # Remove test database and access to it? [Y/n] Y
 # Reload privilege tables now? [Y/n] Y
 
-if [[ ${SKIP_PROMPTS_YES} -eq "Y" ]]; then
+if [[ ${SKIP_PROMPTS_YES} -eq Yes ]]; then
 	yes | mysql_secure_installation
 else
 	mysql_secure_installation
@@ -194,7 +194,7 @@ echo -ne "${A_BOLD}https://pterodactyl.io/tutorials/mysql_setup.html${A_RESET}";
 
 select stopRN in Yes No
 	do
-		if [[ ${stopRN} -eq "Y" ]]; then
+		if [[ ${stopRN} -eq Yes ]]; then
 			echo -ne "${A_BOLD}${A_RED}${A_INVERSE}QUITTING now :C${A_RESET}\ngo to that link, and finish those stes manually! \n";
 			exit 1; 
 		fi
