@@ -132,7 +132,7 @@ ehco -ne "${A_INVERSE}------------------------------------------------${A_RESET}
 
 
 if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
-	echo -ne "Install certbot? (Y/n) ";
+	echo -ne "Install certbot? (Y/n) \n";
 	select ctbt in Yes No 
 	do
 		if [[ $ctbt -eq "Y" ]]; then
@@ -141,12 +141,16 @@ if   [ -z ${SKIP_PROMPTS_YES}  ] &&  [ -z ${SKIP_PROMPTS_NO} ] ; then
 			  apt install curl;
 			fi
 			apt install -y certbot
+			if [ "$ctbt" != "" ]
+              then
+                  break
+              fi
+		else
+		  if [ "$ctbt" != "" ]
+              then
+                  break
+              fi
 		fi
-
-		 if [ "$ctbt" != "" ]
-        then
-            break
-        fi
 	done
 
 	echo -ne "\nInstall composer? (Y/n) ";
