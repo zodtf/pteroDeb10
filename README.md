@@ -1,4 +1,4 @@
-## Debian 11
+## Debian 10
 ### `Summary`
 for internal use only of spooky.tf team. Do not reuse without permission. Or do. But I'll be mad.
 
